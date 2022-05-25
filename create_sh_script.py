@@ -1,51 +1,46 @@
-Devices = []
 General = []
 Device_Names = set([])
 
+def is_in_app_processor_devices(some_string):
+    return some_string.startswith("app/processor/devices/")
+
+def is_in_tests(some_string):
+    return some_string.startswith("tests/processor/") and \
+        some_string.endswith("_processor_test.py")
+
+def is_in_examples(some_string):
+    return some_string.startswith("examples/")
+
 def is_this_device(some_string):
-    is_device = False
-    if some_string.startswith("app/processor/devices/"):
-        is_device = True
-    elif some_string.startswith("tests/processor/") and \
-        some_string.endswith("_processor_test.py"):
-        is_device = True
-    return is_device
+    return is_in_app_processor_devices(some_string) or \
+            is_in_tests(some_string) or \
+            is_in_examples(some_string)
 
 def populate_device_names(some_string):
-    if some_string.startswith("app/processor/devices/"):
+    if is_in_app_processor_devices(some_string):
         some_string = some_string[22:]
         if some_string.find("/") > 0:
             some_string = some_string[:some_string.find("/")]
             Device_Names.add(some_string)
-    elif some_string.startswith("tests/processor/") and \
-        some_string.endswith("_processor_test.py"):
+    elif is_in_tests(some_string):
         some_string = some_string[16:]
         if some_string.find("_processor_test.py") > 0:
             some_string = some_string[:some_string.find("_processor_test.py")]
             Device_Names.add(some_string)
 
-with open("changed_files.txt") as fp:
-    Lines = fp.readlines()
+with open("changed_files.txt") as file:
+    Lines = file.readlines()
     for line in Lines:
         line_stripped = line.strip('\n')
         if is_this_device(line_stripped):
-            Devices.append(line_stripped)
+            populate_device_names(line_stripped)
         else:
             General.append(line_stripped)
-
-print(Devices)
-print(General)
 
 with open("run_tests.sh","w") as file:
     file.write("#!/bin/sh\n")
     if len(General) > 0:
-        # file.write("pytest")
-        file.write("echo 'General files changed'")
+        file.write("pytest")
     else:
-        for device in Devices:
-            populate_device_names(device)
         for device in Device_Names:
-            # file.write(f"pytest tests/processor/{device}_processor_test.py\n")
-            file.write(f"echo '{device} files changed'\n")
-
-print(Device_Names)
+            file.write(f"pytest tests/processor/{device}_processor_test.py\n")
