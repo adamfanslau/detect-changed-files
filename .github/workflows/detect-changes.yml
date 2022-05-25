@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # windows-latest | macos-latest
+    runs-on: ubuntu-latest
     name: Test changed-files
     steps:
       - uses: actions/checkout@v3
@@ -24,6 +24,9 @@ jobs:
       - name: List all changed files
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file was changed"
-            if [[ $file == "goodbye.html" ]]; then echo "goodbye.html changed!"; fi 
+            echo "$file," >> changed_files.csv
           done
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: changed_files.csv
