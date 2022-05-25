@@ -40,7 +40,7 @@ with open("changed_files.txt") as file:
 with open("run_tests.sh","w") as file:
     file.write("#!/bin/sh\n")
     if len(General) > 0:
-        file.write("pytest")
+        file.write("echo 'Changed files could affect entire program'")
     else:
         for device in Device_Names:
-            file.write(f"pytest tests/processor/{device}_processor_test.py\n")
+            file.write(f"echo 'Changed files could affect {device} part of the program'\n")
