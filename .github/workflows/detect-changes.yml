@@ -24,9 +24,9 @@ jobs:
       - name: List all changed files
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "$file," >> changed_files.csv
+            echo "$file" >> changed_files.txt
           done
       - uses: actions/upload-artifact@v3
         with:
           name: my-artifact
-          path: changed_files.csv
+          path: changed_files.txt
