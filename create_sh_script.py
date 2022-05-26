@@ -1,4 +1,8 @@
+import os
+
+
 General = []
+All_Devices = []
 Device_Names = set([])
 
 def is_in_app_processor_devices(some_string):
@@ -28,6 +32,11 @@ def populate_device_names(some_string):
             some_string = some_string[:some_string.find("_processor_test.py")]
             Device_Names.add(some_string)
 
+path_to_all_devices = 'app/processor/devices'
+for path_to_all_devices, dirs, files in os.walk(path_to_all_devices):
+    for subdir in dirs:
+        All_Devices.append(subdir)
+
 with open("changed_files.txt") as file:
     Lines = file.readlines()
     for line in Lines:
@@ -40,7 +49,9 @@ with open("changed_files.txt") as file:
 with open("run_tests.sh","w") as file:
     file.write("#!/bin/sh\n")
     if len(General) > 0:
-        file.write("echo 'Changed files could affect entire program'")
+        file.write("echo 'Changed files could affect entire program'\n")
+        for device in All_Devices:
+            file.write(f"echo 'Changed files could affect {device} part of the program'\n")
     else:
         for device in Device_Names:
             file.write(f"echo 'Changed files could affect {device} part of the program'\n")
