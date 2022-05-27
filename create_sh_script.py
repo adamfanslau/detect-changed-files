@@ -36,6 +36,7 @@ path_to_all_devices = 'app/processor/devices'
 for path_to_all_devices, dirs, files in os.walk(path_to_all_devices):
     for subdir in dirs:
         All_Devices.append(subdir)
+    break
 
 with open("changed_files.txt") as file:
     Lines = file.readlines()
