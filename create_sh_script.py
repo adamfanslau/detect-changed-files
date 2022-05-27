@@ -32,10 +32,11 @@ def populate_device_names(some_string):
             some_string = some_string[:some_string.find("_processor_test.py")]
             Device_Names.add(some_string)
 
-path_to_all_devices = 'app/processor/devices'
+path_to_all_devices = 'tests/processor'
 for path_to_all_devices, dirs, files in os.walk(path_to_all_devices):
-    for subdir in dirs:
-        All_Devices.append(subdir)
+    for file in files:
+        if file.endswith("_processor_test.py"):
+            All_Devices.append(file)
     break
 
 with open("changed_files.txt") as file:
