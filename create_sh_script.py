@@ -36,6 +36,7 @@ path_to_all_devices = 'tests/processor'
 for path_to_all_devices, dirs, files in os.walk(path_to_all_devices):
     for file in files:
         if file.endswith("_processor_test.py"):
+            file = file.replace("_processor_test.py", "")
             All_Devices.append(file)
     break
 
